@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
-import { makePasswordValidator } from '../../../utils/custom-validators';
-import { UserService } from '../user.service';
+import { makePasswordValidator } from '../../shared/utils/custom-validators';
+import { UsersService } from '../shared/users.service';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +12,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    // private userService: UsersService
   ) { }
 
   ngOnInit() {
@@ -32,9 +32,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
   handleSubmit() {
     const { username, password } = this.registerForm.value;
-    this.userService.register({ username, password }).subscribe(undefined, (error) => {
-      this.registerForm.get('username').setErrors({ unique: true });
-    });
+    // this.userService.register({ username, password }).subscribe(undefined, (error) => {
+    //   this.registerForm.get('username').setErrors({ unique: true });
+    // });
   }
 
 }

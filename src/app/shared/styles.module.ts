@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   MatToolbarModule,
   MatIconModule,
@@ -15,6 +16,7 @@ import {
 
 @NgModule({
   exports: [
+    FlexLayoutModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -27,4 +29,4 @@ import {
     MatDividerModule
   ]
 })
-export class AppStylesModule { }
+export class StylesModule { }

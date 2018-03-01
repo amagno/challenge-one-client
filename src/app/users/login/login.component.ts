@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../user.service';
+import { UsersService } from '../shared/users.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    // private usersService: UsersService
   ) { }
 
   ngOnInit() {
@@ -28,12 +28,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
   handleSubmit() {
     const { username, password } = this.loginForm.value;
-    this.userService.login({ username, password }).subscribe(undefined, (error) => {
-      // console.log(error);
-      this.loginForm.reset();
-      this.loginForm.get('username').setErrors({ invalid: true });
-      this.loginForm.get('password').setErrors({ invalid: true });
-    });
+    // this.userService.login({ username, password }).subscribe(undefined, (error) => {
+    //   // console.log(error);
+    //   this.loginForm.reset();
+    //   this.loginForm.get('username').setErrors({ invalid: true });
+    //   this.loginForm.get('password').setErrors({ invalid: true });
+    // });
   }
 
 }

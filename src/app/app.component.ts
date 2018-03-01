@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './core/services/auth.service';
 import { Observable } from 'rxjs/Observable';
-import { User } from './modules/user/user.service';
+import { User } from './users/shared/user.model';
 
 @Component({
   selector: 'app-root',
@@ -11,13 +11,14 @@ import { User } from './modules/user/user.service';
 export class AppComponent implements OnInit  {
   isLogged = false;
   loggedUser: User = {
-    username: ''
+    username: '',
+    email: ''
   };
   constructor(
     private auth: AuthService,
   ) {}
   ngOnInit() {
-    this.auth.isLogged().subscribe(logged => this.isLogged = logged);
-    this.auth.getUserLogged().subscribe(user => this.loggedUser = user);
+    // this.auth.isLogged().subscribe(logged => this.isLogged = logged);
+    // this.auth.getUserLogged().subscribe(user => this.loggedUser = user);
   }
 }
