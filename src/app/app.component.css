@@ -1,0 +1,18 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.link.register {
+  background-color: aquamarine;
+  color: rgba(0, 0, 0, 0.87);
+
+}
+.side-link {
+  text-align: left;
+  border-radius: 0;
+}
+.side-link.icon {
+  margin-bottom: 2px;
+}
+.main {
+  margin-left: 136px !important;
+}

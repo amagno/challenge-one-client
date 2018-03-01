@@ -1,0 +1,21 @@
+.register-container {
+  width: 25%;
+  margin: 10px auto;
+}
+.register-container form {
+  display: flex;
+  flex-direction: column;
+}
+.form.title {
+  margin-bottom: 20px;
+}
+.btn {
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.form.title {
+  text-transform: uppercase;
+  text-align: center;
+}

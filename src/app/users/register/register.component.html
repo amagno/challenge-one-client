@@ -1,0 +1,37 @@
+<mat-card class="register-container">
+  <h4 class="form title">Registro</h4>
+  <form [formGroup]="registerForm" novalidate (ngSubmit)="handleSubmit()">
+    <!-- INPUTS -->
+    <div class="flex center column">
+      <mat-form-field>
+        <input type="text" matInput placeholder="Digite o nome de usuário" formControlName="username">
+        <mat-error *ngIf="registerForm.get('username').hasError('unique')">
+          Username já existe
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input type="password" matInput placeholder="Digite a senha" formControlName="password">
+        <!-- <mat-hint align="end">Here's the dropdown arrow ^</mat-hint> -->
+        <mat-error *ngIf="registerForm.get('password').hasError('invalidPassword')">
+          Senhas não combinam
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input type="password" matInput placeholder="Confirme a senha" formControlName="confirmPassword">
+        <!-- <mat-hint align="end">Here's the dropdown arrow ^</mat-hint> -->
+        <mat-error *ngIf="registerForm.get('confirmPassword').hasError('invalidPassword')">
+          Senhas não combinam
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <!-- BUTTONS -->
+    <div class="flex row center">
+      <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid" class="btn register-color">
+        Enviar
+      </button>
+      <button mat-raised-button color="warn" type="reset" class="btn">
+        Limpar
+      </button>
+    </div>
+  </form>
+</mat-card>

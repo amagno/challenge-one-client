@@ -1,0 +1,36 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<mat-toolbar color="primary">
+  <span>Task list</span>
+  <span class="spacer"></span>
+  <!--  -->
+  <a *ngIf="isLogged" mat-button routerLink="/tasks" class="link">
+    <mat-icon>face</mat-icon> {{ loggedUser.username | titlecase }}
+  </a>
+  <a *ngIf="isLogged" mat-raised-button routerLink="/logout" class="link" color="accent">
+    <mat-icon>close</mat-icon> Logout
+  </a>
+  <!--  -->
+  <a *ngIf="!isLogged" mat-button routerLink="/register" class="link register">
+    <mat-icon>account_box</mat-icon> Registro
+  </a>
+  <a *ngIf="!isLogged" mat-button routerLink="/login" class="link">
+    <mat-icon>done</mat-icon> Login
+  </a>
+</mat-toolbar>
+<mat-drawer-container>
+    <mat-drawer mode="side" [opened]="isLogged" style="border-right: 1px solid #3f51b5;">
+      <div class="flex column">
+        <button mat-raised-button routerLink="/tasks" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
+          Tarefas
+          <mat-icon class="side-link icon">playlist_add_check</mat-icon>
+        </button>
+        <button mat-raised-button [routerLink]="['/', 'tasks', 'new']" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
+          Nova Tarefa
+          <mat-icon class="side-link icon">playlist_add</mat-icon>
+        </button>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content class="main">
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
