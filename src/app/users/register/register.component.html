@@ -1,12 +1,5 @@
 <mat-card class="register-container">
   <h4 class="form title">Registro</h4>
-  {{ registerForm.get('email').errors | json }}
-  {{ registerForm.get('name').errors | json }}
-  {{ registerForm.get('birth').errors | json }}
-  {{ registerForm.get('password').errors | json }}
-  {{ registerForm.get('confirmPassword').errors | json }}
-  {{ registerForm.get('workload').errors | json }}
-  
   <form [formGroup]="registerForm" novalidate (ngSubmit)="handleSubmit()">
     <!-- INPUTS -->
     <div class="flex center column">

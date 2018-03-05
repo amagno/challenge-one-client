@@ -27,9 +27,12 @@
           <span><span class="mat-body-2">> Fim: </span>{{ project.finish }}</span>
       </mat-card-subtitle>
     </div>
-    <div fxFlex="5" *ngIf="project.boss._id === loggedUser._id" style="margin-top: 5px;">
+    <div fxFlex="5" *ngIf="project.boss._id === loggedUser._id" style="margin-top: 5px;" fxLayout="row">
       <button mat-icon-button (click)="handleDelete(project._id)" color="warn">
         <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button (click)="handleEdit(project._id)" color="primary">
+        <mat-icon>edit</mat-icon>
       </button>
     </div>
   </mat-card-header>

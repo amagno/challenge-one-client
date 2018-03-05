@@ -1,61 +1,20 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
-import { makePasswordValidator } from '../../shared/utils/custom-validators';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../users/shared/user.model';
 import { UsersService } from '../../users/shared/users.service';
 import { Moment } from 'moment';
 import { MatDatepicker } from '@angular/material';
-import * as moment from 'moment';
-import * as _ from 'lodash';
 import { ProjectsService } from '../shared/projects.service';
 import { Project, Menber } from '../shared/project.model';
 import { AuthService } from '../../core/auth.service';
-import 'rxjs/add/operator/distinctUntilChanged';
 import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
-const validateStartDate = (finishInput: AbstractControl): ValidatorFn => (control: AbstractControl) => {
-  if (!moment(control.value, 'DD/MM/YYYY').isValid()) {
-    finishInput.disable();
-    return { invalidDate: true };
-  }
-  finishInput.enable();
-  return null;
-};
-const validateFinishDate = (bossProjects: Project[], form: FormGroup): ValidatorFn => (control: AbstractControl) => {
-  if (!moment(control.value, 'DD/MM/YYYY').isValid()) {
-    return { invalidDate: true };
-  }
-  const startInput = form.get('start');
-  const finishInput = form.get('finish');
+import { validateFinishDate, validateStartDate } from '../shared/utils';
+import * as moment from 'moment';
+import * as _ from 'lodash';
+import 'rxjs/add/operator/distinctUntilChanged';
 
-  if (!startInput || !finishInput) {
-    console.log('invalid inputs');
-    return null;
-  }
-  if (!bossProjects.length) {
-    console.log('invalid array');
-    return null;
-  }
-  if (startInput.value > finishInput.value) {
-    return { invalidDate: true };
-  }
-  let state = false;
-  bossProjects.forEach(bp => {
-    // console.log('PB', bp);
-    const bpS = moment(bp.start, 'DD/MM/YYYY');
-    const bpF = moment(bp.finish, 'DD/MM/YYYY');
-    if (!state) {
-      state = bpS.isBetween(startInput.value, finishInput.value)
-        || bpF.isBetween(startInput.value, finishInput.value)
-        || bpS.isSame(startInput.value)
-        || bpF.isSame(finishInput.value);
-    }
-  });
-  if (state) {
-    return { betweenInvalidDate: true };
-  }
-  return null;
-};
 
 @Component({
   selector: 'app-project-create',
@@ -64,62 +23,72 @@ const validateFinishDate = (bossProjects: Project[], form: FormGroup): Validator
 })
 export class ProjectCreateComponent implements OnInit, OnDestroy {
   // @ViewChild('pickerDateFinish') inputDateFinish: MatDatepicker<Moment>;
-  changeFinishDate = new Subject<any>();
-  createForm: FormGroup;
   private _users: User[] = [];
   private _menbers: Menber[] = [];
+  changeFinishDate = new Subject<any>();
+  createForm: FormGroup;
   bossProjects: Project[] = [];
   projects: Project[] = [];
-  // todayDate = 'hee';
+  subscribes: Subscription[];
   constructor(
     private formBuilder: FormBuilder,
     private userService: UsersService,
     private projectsService: ProjectsService,
     private auth: AuthService,
-    // private changeDetector: ChangeDetectorRef
     private router: Router
   ) { }
   private orderUsers(users: User[]): User[] {
     return _.orderBy(users, ['name'], ['asc']);
   }
+  get users(): Menber[] {
+    return this._users;
+  }
+  set users(users: Menber[]) {
+    this._users = this.orderUsers(users);
+  }
+  get menbers(): Menber[] {
+    return this._menbers;
+  }
+  set menbers(users: Menber[]) {
+    this._menbers = this.orderUsers(users);
+  }
+  get startDate(): Moment {
+    return moment(this.createForm.get('start').value).add(1, 'd');
+  }
   ngOnInit() {
     this.buildRegisterForm();
+    // Get project and boss projects
     this.projectsService.getAll().subscribe(p => {
       this.bossProjects = p.filter(b => b.boss._id === this.auth.getUser()._id);
       this.projects = p;
       this.createForm.get('finish').setValidators(validateFinishDate(this.bossProjects, this.createForm));
     });
+    // Get users
     this.userService.getAll().subscribe(users => {
       this.users = users;
     });
-    this.changeFinishDate.subscribe(() => {
-      console.log('CHANGED DATE');
-      this.handleChangeFinishDate();
-    });
+    // Finish date change function
+    this.changeFinishDate.subscribe(() => this.handleChangeFinishDate());
     this.createForm.get('start').setValidators(validateStartDate(this.createForm.get('finish')));
+    // Handle change finish date
     let textEvent;
-    this.createForm.get('finish')
-      .valueChanges
-      .subscribe(() => {
-        const startInput = this.createForm.get('start');
-        const finishInput = this.createForm.get('finish');
-
-        if (startInput.valid && finishInput.valid) {
-          if (finishInput.value !== textEvent) {
-            textEvent = finishInput.value;
-            this.changeFinishDate.next(true);
-          }
-          // console.log(startInput.pristine, finishIndput.pristine);
-        } else {
-          if (finishInput.value !== textEvent) {
-            textEvent = finishInput.value;
-            this.changeFinishDate.next(false);
-          }
+    this.createForm.get('finish').valueChanges.subscribe(() => {
+      const startInput = this.createForm.get('start');
+      const finishInput = this.createForm.get('finish');
+      if (startInput.valid && finishInput.valid) {
+        if (finishInput.value !== textEvent) {
+          textEvent = finishInput.value;
+          this.changeFinishDate.next(true);
         }
-      });
+      } else {
+        if (finishInput.value !== textEvent) {
+          textEvent = finishInput.value;
+          this.changeFinishDate.next(false);
+        }
+      }
+    });
   }
   ngOnDestroy() {
-    console.log(this.bossProjects);
     this.createForm.reset();
   }
   datePickerFilter = (bossProjects: Project[]) => (date: Moment): boolean => {
@@ -154,11 +123,8 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
     }, error => {
       console.log(error);
     });
-    // console.log();
   }
   selectUser(user: Menber) {
-
-
     const menber = Object.assign({}, {
       ...user,
       workloadProject: 1
@@ -176,24 +142,16 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
     ];
     this.menbers = this.menbers.filter(u => u._id !== user._id);
   }
-  get users(): Menber[] {
-    return this._users;
-  }
-  set users(users: Menber[]) {
-    this._users = this.orderUsers(users);
-  }
-  get menbers(): Menber[] {
-    return this._menbers;
-  }
-  set menbers(users: Menber[]) {
-    this._menbers = this.orderUsers(users);
-  }
-  get startDate(): Moment {
-    return moment(this.createForm.get('start').value).add(1, 'd');
-  }
   handleChangeFinishDate() {
     const startInput = this.createForm.get('start');
     const finishInput = this.createForm.get('finish');
+    if (this.projects.length === 0) {
+      this.users = this.users.map(u => ({
+        ...u,
+        workloadAvailable: u.workload
+      }));
+      return;
+    }
     let runned = false;
     this.projects.forEach(p => {
       const start = moment(p.start, 'DD/MM/YYYY');

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: '', component: ProjectContainerComponent, children: [
     { path: 'all', component: ProjectListComponent },
     { path: 'create', component: ProjectCreateComponent },
+    { path: 'edit/:id', component: ProjectCreateComponent },
     { path: '', redirectTo: 'all', pathMatch: 'full' }
   ] }
 ];
