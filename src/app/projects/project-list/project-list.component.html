@@ -10,9 +10,9 @@
 <mat-divider></mat-divider>
 <mat-card class="project" *ngFor="let project of searchProjects" >
   <mat-card-header fxLayout="row">
-    <div fxFlex="50">
+    <div fxFlex="70">
       <mat-card-title fxLayout="column" fxLayoutAlign="center" >
-        <div>
+        <div class="mat-subheading-2">
           {{ project.name | titlecase }}
         </div>
         <div fxLayoutAlign="start center" style="margin-top: 10px;">
@@ -22,8 +22,9 @@
         </div>
       </mat-card-title>
       <mat-card-subtitle>
-          {{ project.createdAt }} -
-          {{ project.start }} / {{ project.finish }}
+          <span><span class="mat-body-2">> Criada: </span>{{ project.createdAt }}</span>
+          <span><span class="mat-body-2">> Início: </span>{{ project.start }}</span>
+          <span><span class="mat-body-2">> Fim: </span>{{ project.finish }}</span>
       </mat-card-subtitle>
     </div>
     <div fxFlex="5" *ngIf="project.boss._id === loggedUser._id" style="margin-top: 5px;">
