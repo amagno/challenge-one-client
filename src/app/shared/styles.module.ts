@@ -11,11 +11,23 @@ import {
   MatTableModule,
   MatSidenavModule,
   MatCheckboxModule,
-  MatDividerModule
+  MatDividerModule,
+  MatSelectModule,
+  MatSliderModule,
+  MatDatepicker,
+  MatDatepickerModule,
+  MatAutocompleteModule,
+  MatListModule,
 } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+  ],
   exports: [
+    MatMomentDateModule,
     FlexLayoutModule,
     MatToolbarModule,
     MatIconModule,
@@ -26,7 +38,13 @@ import {
     MatTableModule,
     MatSidenavModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    MatListModule
   ]
 })
-export class StylesModule { }
+export class StylesModule {
+}

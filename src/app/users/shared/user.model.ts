@@ -1,11 +1,11 @@
+import { ApiModel } from '../../shared/api.model';
 
-export class User {
-  username: string;
-  email: string;
-  birthDate: Date;
-  workLoad: number;
+export interface User extends ApiModel {
+  // username: string;
+  name?: string;
+  email?: string;
+  birth?: Date;
+  workload?: number;
   schooling?: string;
-  firstName?: string;
-  lastName?: string;
   phone?: string;
 }

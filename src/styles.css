@@ -75,3 +75,13 @@ table {
 	line-height: 50px !important;
 	vertical-align: middle !important;
 }
+input::-webkit-calendar-picker-indicator{
+	display: none;
+}
+
+input[type="date"]::-webkit-input-placeholder{ 
+	visibility: hidden !important;
+}
+.mat-list-item-content {
+  width: 100% !important;
+}

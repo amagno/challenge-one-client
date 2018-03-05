@@ -4,15 +4,15 @@
     <!-- INPUTS -->
     <div class="flex center column">
       <mat-form-field>
-        <input type="text" matInput placeholder="Digite o nome de usuário" formControlName="username">
-        <mat-error *ngIf="loginForm.get('username').hasError('invalid')">
-          Username ou senha incorretos
+        <input type="email" matInput placeholder="Digite o e-mail" formControlName="email">
+        <mat-error *ngIf="loginForm.get('email').hasError('invalid')">
+          E-mail ou senha incorretos
         </mat-error>
       </mat-form-field>
       <mat-form-field>
         <input type="password" matInput placeholder="Digite a senha" formControlName="password">
         <mat-error *ngIf="loginForm.get('password').hasError('invalid')">
-          Username ou senha incorretos
+          E-mail ou senha incorretos
         </mat-error>
         <!-- <mat-hint align="end">Here's the dropdown arrow ^</mat-hint> -->
       </mat-form-field>

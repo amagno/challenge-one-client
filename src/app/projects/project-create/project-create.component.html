@@ -1,0 +1,90 @@
+<mat-card class="register-container">
+  <h4 class="form title">Novo Projeto</h4>
+  <form [formGroup]="createForm" novalidate (ngSubmit)="handleSubmit()">
+    <!-- INPUTS -->
+    <div class="flex center column">
+      <mat-form-field>
+        <input type="text" matInput placeholder="Nome do projeto" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <textarea matInput placeholder="Descrição"></textarea>
+      </mat-form-field>
+      <div class="dates" fxLayout="row">
+
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerDateStart" [matDatepickerFilter]="datePickerFilter(bossProjects)" placeholder="Data de começo"
+            formControlName="start">
+          <mat-datepicker-toggle matSuffix [for]="pickerDateStart"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDateStart startView="month"></mat-datepicker>
+          <mat-error *ngIf="createForm.get('start').hasError('betweenInvalidDate')">
+            Data inválida
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerDateFinish" [matDatepickerFilter]="datePickerFilter(bossProjects)" [min]="startDate"
+            placeholder="Data de término" formControlName="finish" (change)="changeFinishDate.next(false)">
+          <mat-datepicker-toggle matSuffix [for]="pickerDateFinish"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDateFinish startView="month"></mat-datepicker>
+          <mat-error *ngIf="createForm.get('finish').hasError('betweenInvalidDate')">
+            Data inválida
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="menbers" fxLayout="column">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Escolha o time" [matAutocomplete]="auto" [disabled]="users.length === 0 || !this.createForm.get('start').valid || !this.createForm.get('finish').valid">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let user of users" (onSelectionChange)="selectUser(user)" [disabled]="user.workloadAvailable === 0">
+              <div fxLayout="row">
+                <span fxFlex="10">
+                  <div class="mat-body-2" fxLayout="row">
+                    {{ user.name | titlecase }}
+                  </div>
+                  <div class="mat-caption">{{ user.email }}</div>
+                </span>
+                <span fxFlex="10">
+                  <mat-icon>timer</mat-icon>
+                  <b class="mat-body-2">{{ user.workloadAvailable }}:00 h</b> /
+                  {{ user.workload }}:00 h
+                </span>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-list role="menbers" style="margin-bottom: 20px;">
+          <mat-list-item *ngFor="let menber of menbers" role="menber" fxLayout="row" fxLayoutAlign="start" style="width: 100%">
+            <span fxFlex="10">
+              <div class="mat-body-2">{{ menber.name | titlecase }}</div>
+              <div class="mat-caption">{{ menber.email }}</div>
+            </span>
+            <span fxFlex="15" fxLayoutAlign="center">
+              <mat-slider matInput [min]="1" [max]="menber.workloadAvailable ? menber.workloadAvailable : menber.workload" #slider [value]="menber.workloadProject" (change)="menber.workloadProject = slider.value"></mat-slider>
+            </span>
+            <span fxFlex="15" fxLayoutAlign="center">
+              <mat-icon style="margin-right: 10px;">alarm</mat-icon>
+              <span class="mat-body-2">{{ slider.value }}:00 h / {{ menber.workloadAvailable }}:00 h</span>
+            </span>
+            <span fxFlex="10" fxLayoutAlign="center">
+              <button type="button" mat-icon-button color="warn" (click)="diselectUser(menber)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+
+    </div>
+    <!-- BUTTONS -->
+    <div class="flex row center">
+      <button mat-raised-button color="primary" type="submit" [disabled]="createForm.invalid" class="btn" style="margin-right: 20px;">
+        Enviar
+      </button>
+      <button mat-raised-button color="warn" type="reset" class="btn">
+        Limpar
+      </button>
+    </div>
+
+  </form>
+</mat-card>

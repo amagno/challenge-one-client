@@ -14,5 +14,6 @@
   margin-bottom: 2px;
 }
 .main {
-  margin-left: 136px !important;
+  /* margin-left: 136px !important; */
+  min-height: 500px;
 }

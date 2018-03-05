@@ -4,7 +4,7 @@
   <span class="spacer"></span>
   <!--  -->
   <a *ngIf="isLogged" mat-button routerLink="/tasks" class="link">
-    <mat-icon>face</mat-icon> {{ loggedUser.username | titlecase }}
+    <mat-icon>face</mat-icon> {{ loggedUser.name | titlecase }}
   </a>
   <a *ngIf="isLogged" mat-raised-button routerLink="/logout" class="link" color="accent">
     <mat-icon>close</mat-icon> Logout
@@ -20,12 +20,12 @@
 <mat-drawer-container>
     <mat-drawer mode="side" [opened]="isLogged" style="border-right: 1px solid #3f51b5;">
       <div class="flex column">
-        <button mat-raised-button routerLink="/tasks" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
-          Tarefas
+        <button mat-raised-button [routerLink]="['/', 'projects', 'all']" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
+          Projetos
           <mat-icon class="side-link icon">playlist_add_check</mat-icon>
         </button>
-        <button mat-raised-button [routerLink]="['/', 'tasks', 'new']" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
-          Nova Tarefa
+        <button mat-raised-button [routerLink]="['/', 'projects', 'create']" routerLinkActive="mat-accent" class="side-link" [routerLinkActiveOptions]="{exact: true}">
+          Novo Projeto
           <mat-icon class="side-link icon">playlist_add</mat-icon>
         </button>
       </div>

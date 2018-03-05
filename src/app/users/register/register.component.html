@@ -1,12 +1,22 @@
 <mat-card class="register-container">
   <h4 class="form title">Registro</h4>
+  {{ registerForm.get('email').errors | json }}
+  {{ registerForm.get('name').errors | json }}
+  {{ registerForm.get('birth').errors | json }}
+  {{ registerForm.get('password').errors | json }}
+  {{ registerForm.get('confirmPassword').errors | json }}
+  {{ registerForm.get('workload').errors | json }}
+  
   <form [formGroup]="registerForm" novalidate (ngSubmit)="handleSubmit()">
     <!-- INPUTS -->
     <div class="flex center column">
       <mat-form-field>
-        <input type="text" matInput placeholder="Digite o nome de usuário" formControlName="username">
-        <mat-error *ngIf="registerForm.get('username').hasError('unique')">
-          Username já existe
+        <input type="text" matInput placeholder="Digite o nome" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input type="email" matInput placeholder="Digite o e-mail" formControlName="email">
+        <mat-error *ngIf="registerForm.get('email').hasError('unique')">
+          E-mail já existe 
         </mat-error>
       </mat-form-field>
       <mat-form-field>
@@ -23,6 +33,17 @@
           Senhas não combinam
         </mat-error>
       </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Data de nascimento" formControlName="birth">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker startView="year" ></mat-datepicker>
+      </mat-form-field>
+      <div fxLayout="column" class="mat-typography">
+        <span fxLayoutAlign="center">Escolha a carga horária máxima diária</span>
+        <span class="mat-body-2" style="font-size: 18px;" fxLayoutAlign="center">{{ slider.value + ':00 h' }}</span>
+        <mat-slider formControlName="workload" matInput min="1" max="24" #slider></mat-slider>
+      </div>
+
     </div>
     <!-- BUTTONS -->
     <div class="flex row center">
@@ -33,5 +54,6 @@
         Limpar
       </button>
     </div>
+
   </form>
 </mat-card>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './core/services/auth.service';
+import { AuthService } from './core/auth.service';
 import { Observable } from 'rxjs/Observable';
 import { User } from './users/shared/user.model';
 
@@ -11,14 +11,14 @@ import { User } from './users/shared/user.model';
 export class AppComponent implements OnInit  {
   isLogged = false;
   loggedUser: User = {
-    username: '',
+    name: '',
     email: ''
   };
   constructor(
     private auth: AuthService,
   ) {}
   ngOnInit() {
-    // this.auth.isLogged().subscribe(logged => this.isLogged = logged);
-    // this.auth.getUserLogged().subscribe(user => this.loggedUser = user);
+    this.auth.isLogged().subscribe(logged => this.isLogged = logged);
+    this.auth.getUserLogged().subscribe(user => this.loggedUser = user);
   }
 }
