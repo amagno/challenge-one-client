@@ -43,9 +43,9 @@ const validateFinishDate = (bossProjects: Project[], form: FormGroup): Validator
     const bpF = moment(bp.finish, 'DD/MM/YYYY');
     if (!state) {
       state = bpS.isBetween(startInput.value, finishInput.value)
-      || bpF.isBetween(startInput.value, finishInput.value)
-      || bpS.isSame(startInput.value)
-      || bpF.isSame(finishInput.value);
+        || bpF.isBetween(startInput.value, finishInput.value)
+        || bpS.isSame(startInput.value)
+        || bpF.isSame(finishInput.value);
     }
   });
   if (state) {
@@ -185,48 +185,45 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
     return moment(this.createForm.get('start').value).add(1, 'd');
   }
   handleChangeFinishDate() {
-    console.log('CHANGE!!!!');
     const startInput = this.createForm.get('start');
     const finishInput = this.createForm.get('finish');
-      console.log('CHANGE');
-      this.projects.forEach(p => {
-        const start = moment(p.start, 'DD/MM/YYYY');
-        const finish = moment(p.finish, 'DD/MM/YYYY');
-        const startCheck = start.isBetween(startInput.value, finishInput.value)
+    this.projects.forEach(p => {
+      const start = moment(p.start, 'DD/MM/YYYY');
+      const finish = moment(p.finish, 'DD/MM/YYYY');
+      const startCheck = start.isBetween(startInput.value, finishInput.value)
         || start.isSame(startInput.value)
         || start.isSame(finishInput.value);
-        const finishCheck = finish.isBetween(startInput.value, finishInput.value)
+      const finishCheck = finish.isBetween(startInput.value, finishInput.value)
         || finish.isSame(startInput.value)
         || finish.isSame(finishInput.value);
+      if (startCheck || finishCheck) {
         this.users = this.users.map(u => {
-          console.log('USERS ====> ', u);
+          // console.log('USERS ====> ', u);
           const workloadAvalTeam = _.compact(p.team.map<number>(t => {
-            console.log('TEAM ====>', t);
+            // console.log('TEAM ====>', t);
             if (t._id === u._id) {
-              if (startCheck || finishCheck) {
-                if (t.workloadProject === t.workload) {
-                  return 1;
-                }
-                if (typeof t.workloadProject !== 'undefined' && typeof t.workload !== 'undefined') {
-                  console.log(t.workload);
-                  console.log(t.workloadProject);
-                  console.log(t.workloadAvailable);
-                  return (t.workload - t.workloadProject) + 1;
-                }
+              if (t.workloadProject === t.workload) {
+                return 1;
+              }
+              if (typeof t.workloadProject !== 'undefined' &&
+                typeof t.workload !== 'undefined') {
+                return (t.workload - t.workloadProject) + 1;
               }
               return t.workload + 1;
             }
+            // console.log('NEW USERS ===> ', this.users);
           }));
-          const aval = workloadAvalTeam[0] === NaN || !workloadAvalTeam[0] ? u.workload + 1 : workloadAvalTeam[0];
-          console.log('WORK AVAL ===> ', aval);
-          console.log('USER WORK AVAL ===> ', u.workloadAvailable);
-            return {
-              ...u,
-              workloadAvailable: aval - 1
-            };
+          // console.log('WORK LOAD', workloadAvalTeam[0], u.workloadAvailable, u.workload);
+          const aval = typeof workloadAvalTeam[0] !== 'undefined' ? workloadAvalTeam[0] : u.workload + 1;
+          // console.log('WORK AVAL ===> ', aval);
+          // console.log('USER WORK AVAL ===> ', u.workloadAvailable);
+          return {
+            ...u,
+            workloadAvailable: aval - 1
+          };
         });
-        console.log('NEW USERS ===> ', this.users);
-      });
+      }
+    });
   }
   clickToError() {
     console.log('SET ERROR');

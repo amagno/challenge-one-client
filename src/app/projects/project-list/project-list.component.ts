@@ -4,6 +4,9 @@ import { ProjectsService } from '../shared/projects.service';
 import { Subject } from 'rxjs/Subject';
 import * as moment from 'moment';
 import 'rxjs/add/operator/debounceTime';
+import * as _ from 'lodash';
+import { AuthService } from '../../core/auth.service';
+import { User } from '../../users/shared/user.model';
 
 
 const buildSearchRegex = (str = ''): RegExp => {
@@ -28,8 +31,10 @@ export class ProjectListComponent implements OnInit {
   projects: Project[];
   searchProjects: Project[];
   searchValue = new Subject();
+  loggedUser: User;
   constructor(
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private auth: AuthService,
   ) {
     moment.locale('pt-br');
   }
@@ -39,16 +44,20 @@ export class ProjectListComponent implements OnInit {
       console.log(projects);
       this.projects = projects.map(p => ({
         ...p,
-        createdAt: moment(p.createdAt).format('LLL')
+        createdAt: moment(p.createdAt).format('LLL'),
+        start: moment(p.start, 'DD/MM/YYYY').format('LL'),
+        finish: moment(p.finish, 'DD/MM/YYYY').format('LL'),
       }));
-      this.searchProjects = this.projects;
+      this.searchProjects = _.orderBy(this.projects, ['date'], ['asc']);
     });
     this.searchValue
       .debounceTime(1)
       .distinctUntilChanged()
       .subscribe((value: string) => {
-        this.searchProjects = this.projects.filter(p => p.name.match(buildSearchRegex(value)));
+        const result = this.projects.filter(p => p.name.match(buildSearchRegex(value)));
+        this.searchProjects = _.orderBy(result, ['date'], ['asc']);
       });
+    this.loggedUser = this.auth.getUser();
   }
   handleDelete(id) {
     this.projectsService.delete(id).subscribe(res => {

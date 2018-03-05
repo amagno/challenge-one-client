@@ -9,7 +9,7 @@ export interface Project extends ApiModel {
   name?: string;
   boss?: User;
   description?: string;
-  start?: Date;
-  finish?: Date;
+  start?: Date | string;
+  finish?: Date | string;
   team?: Menber[];
 }

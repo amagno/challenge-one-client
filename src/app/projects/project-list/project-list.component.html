@@ -8,14 +8,26 @@
 
 </mat-card>
 <mat-divider></mat-divider>
-<mat-card *ngFor="let project of searchProjects">
+<mat-card class="project" *ngFor="let project of searchProjects" >
   <mat-card-header fxLayout="row">
     <div fxFlex="50">
-      <mat-card-title>{{ project.name | titlecase }}</mat-card-title>
-      <mat-card-subtitle>{{ project.createdAt }}</mat-card-subtitle>
+      <mat-card-title fxLayout="column" fxLayoutAlign="center" >
+        <div>
+          {{ project.name | titlecase }}
+        </div>
+        <div fxLayoutAlign="start center" style="margin-top: 10px;">
+          <mat-icon style="margin-right: 10px; margin-left: 10px;">face</mat-icon>
+          <b class="mat-body-2" style="margin-right: 5px;">{{ project.boss.name | titlecase }}</b>
+          <small class="mat-caption">> {{ project.boss.email }}</small>
+        </div>
+      </mat-card-title>
+      <mat-card-subtitle>
+          {{ project.createdAt }} -
+          {{ project.start }} / {{ project.finish }}
+      </mat-card-subtitle>
     </div>
-    <div fxFlex="5">
-      <button mat-icon-button (click)="handleDelete(project._id)">
+    <div fxFlex="5" *ngIf="project.boss._id === loggedUser._id" style="margin-top: 5px;">
+      <button mat-icon-button (click)="handleDelete(project._id)" color="warn">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
