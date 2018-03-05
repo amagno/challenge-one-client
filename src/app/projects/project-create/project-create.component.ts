@@ -222,6 +222,11 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
             workloadAvailable: aval - 1
           };
         });
+      } else {
+        this.users = this.users.map(u => ({
+          ...u,
+          workloadAvailable: u.workload
+        }));
       }
     });
   }
