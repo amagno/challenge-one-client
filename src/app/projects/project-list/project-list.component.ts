@@ -48,14 +48,14 @@ export class ProjectListComponent implements OnInit {
         start: moment(p.start, 'DD/MM/YYYY').format('LL'),
         finish: moment(p.finish, 'DD/MM/YYYY').format('LL'),
       }));
-      this.searchProjects = _.orderBy(this.projects, ['date'], ['asc']);
+      this.searchProjects = _.orderBy(this.projects, ['name'], ['asc']);
     });
     this.searchValue
       .debounceTime(1)
       .distinctUntilChanged()
       .subscribe((value: string) => {
         const result = this.projects.filter(p => p.name.match(buildSearchRegex(value)));
-        this.searchProjects = _.orderBy(result, ['date'], ['asc']);
+        this.searchProjects = _.orderBy(result, ['name'], ['asc']);
       });
     this.loggedUser = this.auth.getUser();
   }
@@ -63,6 +63,7 @@ export class ProjectListComponent implements OnInit {
     this.projectsService.delete(id).subscribe(res => {
       console.log(res);
       this.projects = this.projects.filter(p => p._id !== id);
+      this.searchProjects = _.orderBy(this.projects, ['name'], ['asc']);
     });
   }
   handleSearch(value) {

@@ -36,6 +36,9 @@ const validateFinishDate = (bossProjects: Project[], form: FormGroup): Validator
     console.log('invalid array');
     return null;
   }
+  if (startInput.value > finishInput.value) {
+    return { invalidDate: true };
+  }
   let state = false;
   bossProjects.forEach(bp => {
     // console.log('PB', bp);
@@ -53,6 +56,7 @@ const validateFinishDate = (bossProjects: Project[], form: FormGroup): Validator
   }
   return null;
 };
+
 @Component({
   selector: 'app-project-create',
   templateUrl: './project-create.component.html',
@@ -88,7 +92,10 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
     this.userService.getAll().subscribe(users => {
       this.users = users;
     });
-    this.changeFinishDate.distinctUntilChanged().subscribe(() => this.handleChangeFinishDate());
+    this.changeFinishDate.subscribe(() => {
+      console.log('CHANGED DATE');
+      this.handleChangeFinishDate();
+    });
     this.createForm.get('start').setValidators(validateStartDate(this.createForm.get('finish')));
     let textEvent;
     this.createForm.get('finish')
@@ -187,6 +194,7 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
   handleChangeFinishDate() {
     const startInput = this.createForm.get('start');
     const finishInput = this.createForm.get('finish');
+    let runned = false;
     this.projects.forEach(p => {
       const start = moment(p.start, 'DD/MM/YYYY');
       const finish = moment(p.finish, 'DD/MM/YYYY');
@@ -217,23 +225,19 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
           const aval = typeof workloadAvalTeam[0] !== 'undefined' ? workloadAvalTeam[0] : u.workload + 1;
           // console.log('WORK AVAL ===> ', aval);
           // console.log('USER WORK AVAL ===> ', u.workloadAvailable);
+          runned = true;
           return {
             ...u,
             workloadAvailable: aval - 1
           };
         });
       } else {
+        // (!u.workloadAvailable && u.workloadAvailable !== 0)
         this.users = this.users.map(u => ({
           ...u,
-          workloadAvailable: u.workload
+          workloadAvailable: !runned ? u.workload : u.workloadAvailable
         }));
       }
     });
-  }
-  clickToError() {
-    console.log('SET ERROR');
-    this.createForm.get('start').setErrors({ betweenInvalidDate: true });
-    this.createForm.get('finish').setErrors({ betweenInvalidDate: true });
-    console.log(this.createForm.get('finish'));
   }
 }
