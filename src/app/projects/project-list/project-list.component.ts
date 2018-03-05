@@ -15,8 +15,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./project-list.component.css']
 })
 export class ProjectListComponent implements OnInit {
-  private _searchProjects: Project[];
-  projects: Project[];
+  private _searchProjects: Project[] = [];
+  projects: Project[] = [];
   searchValue = new Subject();
   loggedUser: User;
   constructor(
@@ -49,6 +49,9 @@ export class ProjectListComponent implements OnInit {
       .subscribe((value: string) => {
         this.searchProjects = this.projects.filter(p => _.deburr(p.name).match(new RegExp(value, 'ig')));
       });
+    console.log(this.loggedUser);
+    console.log(this.projects);
+    console.log(this.searchProjects);
   }
   handleDelete(id) {
     this.projectsService.delete(id).subscribe(res => {

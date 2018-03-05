@@ -1,5 +1,6 @@
-<mat-card class="register-container">
+<mat-card fxFlex="100">
   <h4 class="form title">Novo Projeto</h4>
+  <!-- {{ createForm.valid }} -->
   <form [formGroup]="createForm" novalidate (ngSubmit)="handleSubmit()">
     <!-- INPUTS -->
     <div class="flex center column">
@@ -7,9 +8,9 @@
         <input type="text" matInput placeholder="Nome do projeto" formControlName="name">
       </mat-form-field>
       <mat-form-field>
-        <textarea matInput placeholder="Descrição"></textarea>
+        <textarea matInput placeholder="Descrição" formControlName="description"></textarea>
       </mat-form-field>
-      <div class="dates" fxLayout="row">
+      <div class="dates" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
 
         <mat-form-field>
           <input matInput [matDatepicker]="pickerDateStart" [matDatepickerFilter]="datePickerFilter(bossProjects)" placeholder="Data de começo"

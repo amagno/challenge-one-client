@@ -1,8 +1,8 @@
-<mat-card class="register-container">
+<mat-card class="login-container" fxFlex="30" fxFlex.sm="50" fxFlex.xs="70">
   <h4 class="form title">Login</h4>
   <form [formGroup]="loginForm" novalidate (ngSubmit)="handleSubmit()">
     <!-- INPUTS -->
-    <div class="flex center column">
+    <div fxLayout="column" fxLayoutAlign="center">
       <mat-form-field>
         <input type="email" matInput placeholder="Digite o e-mail" formControlName="email">
         <mat-error *ngIf="loginForm.get('email').hasError('invalid')">

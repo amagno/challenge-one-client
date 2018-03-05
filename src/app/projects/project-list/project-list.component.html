@@ -10,15 +10,15 @@
 <mat-divider></mat-divider>
 <mat-card class="project" *ngFor="let project of searchProjects" >
   <mat-card-header fxLayout="row">
-    <div fxFlex="70">
+    <div fxFlex="70" fxFlex.sm="50" fxFlex.xs="50">
       <mat-card-title fxLayout="column" fxLayoutAlign="center" >
-        <div class="mat-subheading-2">
+        <div class="mat-subheading-2" fxFlex="100">
           {{ project.name | titlecase }}
         </div>
-        <div fxLayoutAlign="start center" style="margin-top: 10px;">
-          <mat-icon style="margin-right: 10px; margin-left: 10px;">face</mat-icon>
+        <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 10px;" fxFlex="100">
+          <mat-icon style="margin-right: 10px;">face</mat-icon>
           <b class="mat-body-2" style="margin-right: 5px;">{{ project.boss.name | titlecase }}</b>
-          <small class="mat-caption">> {{ project.boss.email }}</small>
+          <small class="mat-caption">{{ project.boss.email }}</small>
         </div>
       </mat-card-title>
       <mat-card-subtitle>
@@ -43,11 +43,11 @@
   </mat-card-content>
   <mat-list>
     <mat-list-item *ngFor="let menber of project.team">
-      <div fxLayout="column" fxFlex="30">
+      <div fxLayout="column" fxFlex="30" fxFlex.sm="50" fxFlex.xs="60">
         <div class="mat-body-2">{{ menber.name | titlecase }}</div>
         <div class="mat-caption">{{ menber.email }}</div>
       </div>
-      <div fxFlex="20">
+      <div fxFlex="20" fxFlex.sm="30" fxFlex.xs="40">
         {{ menber.workloadProject }}: 00 h
       </div>
       <mat-divider></mat-divider>

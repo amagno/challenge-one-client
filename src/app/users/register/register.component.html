@@ -1,8 +1,8 @@
-<mat-card class="register-container">
+<mat-card fxFlex="70" class="register-container">
   <h4 class="form title">Registro</h4>
   <form [formGroup]="registerForm" novalidate (ngSubmit)="handleSubmit()">
     <!-- INPUTS -->
-    <div class="flex center column">
+    <div fxLayout="column" fxLayoutAlign="center">
       <mat-form-field>
         <input type="text" matInput placeholder="Digite o nome" formControlName="name">
       </mat-form-field>

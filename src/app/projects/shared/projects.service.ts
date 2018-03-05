@@ -20,5 +20,11 @@ export class ProjectsService {
   public delete(id): Observable<any> {
     return this.http.delete<any>(`${API_URL}/projects/${id}`);
   }
+  public getById(id): Observable<Project> {
+    return this.http.get<Project>(`${API_URL}/projects/${id}`);
+  }
+  public edit(id: string, data: Project): Observable<any> {
+    return this.http.put<any>(`${API_URL}/projects/${id}`, data);
+  }
 
 }

@@ -7,6 +7,9 @@ export const validateStartDate = (finishInput: AbstractControl): ValidatorFn => 
     finishInput.disable();
     return { invalidDate: true };
   }
+  if (moment(control.value, 'DD/MM/YYYY') > moment(finishInput.value, 'DD/MM/YYYYY')) {
+    return { invalidDate: true };
+  }
   finishInput.enable();
   return null;
 };

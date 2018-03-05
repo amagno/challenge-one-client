@@ -9,7 +9,7 @@ import { Project, Menber } from '../shared/project.model';
 import { AuthService } from '../../core/auth.service';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { validateFinishDate, validateStartDate } from '../shared/utils';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -25,6 +25,8 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
   // @ViewChild('pickerDateFinish') inputDateFinish: MatDatepicker<Moment>;
   private _users: User[] = [];
   private _menbers: Menber[] = [];
+  private edit = false;
+  private editId: string;
   changeFinishDate = new Subject<any>();
   createForm: FormGroup;
   bossProjects: Project[] = [];
@@ -35,7 +37,8 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
     private userService: UsersService,
     private projectsService: ProjectsService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
   private orderUsers(users: User[]): User[] {
     return _.orderBy(users, ['name'], ['asc']);
@@ -57,9 +60,32 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.buildRegisterForm();
+    // Edit subscribe
+    this.route.params.subscribe(({ id }) => {
+      // console.log(param.id);
+      if (id) {
+        this.projectsService.getById(id).subscribe(res => {
+          this.edit = true;
+          this.editId = id;
+          this.createForm.setValue({
+            name: res.name,
+            description: res.description || '',
+            start: moment(res.start, 'DD/MM/YYYYY'),
+            finish: moment(res.finish, 'DD/MM/YYYY'),
+            team: null
+          });
+          this.menbers = res.team;
+        });
+      }
+    });
     // Get project and boss projects
     this.projectsService.getAll().subscribe(p => {
-      this.bossProjects = p.filter(b => b.boss._id === this.auth.getUser()._id);
+      this.bossProjects = p.filter(b => {
+        if (this.edit === true) {
+          return b.boss._id === this.auth.getUser()._id && b._id !== this.editId;
+        }
+        return b.boss._id === this.auth.getUser()._id;
+      });
       this.projects = p;
       this.createForm.get('finish').setValidators(validateFinishDate(this.bossProjects, this.createForm));
     });
@@ -68,7 +94,11 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
       this.users = users;
     });
     // Finish date change function
-    this.changeFinishDate.subscribe(() => this.handleChangeFinishDate());
+    this.changeFinishDate.subscribe(() => {
+      console.log('DATE CHANGED');
+      this.menbers = [];
+      this.handleChangeFinishDate();
+    });
     this.createForm.get('start').setValidators(validateStartDate(this.createForm.get('finish')));
     // Handle change finish date
     let textEvent;
@@ -105,7 +135,7 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
   buildRegisterForm() {
     this.createForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(130)]],
-      // description: [''],
+      description: [''],
       start: [{ value: null, disabled: false }, [Validators.required]],
       finish: [{ value: null, disabled: true }, [Validators.required]],
       team: [null],
@@ -117,22 +147,30 @@ export class ProjectCreateComponent implements OnInit, OnDestroy {
       team: this.menbers
     }) as Project;
     console.log(submitValues);
-    this.projectsService.create(submitValues).subscribe(async res => {
-      console.log(res);
-      await this.router.navigate(['/projects']);
-    }, error => {
-      console.log(error);
-    });
+    if (this.edit === false) {
+      this.projectsService.create(submitValues).subscribe(async res => {
+        console.log(res);
+        await this.router.navigate(['/projects']);
+      }, error => {
+        console.log(error);
+      });
+    }
+    if (this.edit === true) {
+      this.projectsService.edit(this.editId, submitValues).subscribe(async res => {
+        console.log(res);
+        await this.router.navigate(['/projects']);
+      });
+    }
   }
   selectUser(user: Menber) {
     const menber = Object.assign({}, {
       ...user,
       workloadProject: 1
     });
-    this.menbers = [
+    this.menbers = _.orderBy([
       ...this.menbers,
       menber
-    ];
+    ], ['name'], ['asc']);
     this.users = this.users.filter(u => u._id !== user._id);
   }
   diselectUser(user: User) {
